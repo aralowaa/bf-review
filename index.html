@@ -238,6 +238,78 @@
             margin: 16px 0;
         }
 
+        /* Wordle Mini-Game Box */
+        .wordle-box {
+            background: #ffffff;
+            border: 1.5px solid #ffccd5;
+            border-radius: 16px;
+            padding: 18px 16px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.05);
+        }
+        .wordle-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ff4d6d;
+        }
+        .wordle-grid {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            gap: 6px;
+            width: 210px;
+            margin: 12px auto;
+        }
+        .wordle-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+        .wordle-tile {
+            width: 36px;
+            height: 36px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 16px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+        .wordle-input-area {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .wordle-input-area input {
+            width: 130px;
+            padding: 8px 12px;
+            border: 1.5px solid #ffccd5;
+            border-radius: 14px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
+            outline: none;
+        }
+        .wordle-input-area button {
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 14px;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .wordle-input-area button:hover {
+            background: #ff3355;
+        }
+
         /* Secret Coupon */
         .hidden-message { 
             display: none; 
@@ -292,7 +364,7 @@
             font-weight: 600;
             cursor: pointer;
             position: relative;
-            transition: background-color 0.2s;
+            transition: all 0.15s ease;
         }
         #runaway-btn:hover {
             background-color: #fff0f3;
@@ -309,7 +381,7 @@
             <div class="avatar">C</div>
             <div class="user-info">
                 <h3>Cora Soong <span class="badge-pill">✨ Top Critic</span></h3>
-                <p>Local Guide · Level 6 Months</p>
+                <p>Local Guide · 6 Months</p>
                 <div class="verified-tag">💖 Verified Official Girlfriend</div>
             </div>
         </div>
@@ -366,7 +438,21 @@
             </div>
 
             <div class="recommendation-banner">
-                🔒 <strong>Would I recommend?</strong> Absolutely not, this location is strictly private property.
+                🔒 <strong>Would I recommend?</strong> Absolutely not, this is strictly private property.
+            </div>
+
+            <!-- Anniversary Wordle Game -->
+            <div class="wordle-box">
+                <div class="wordle-title">🧩 Anniversary Mini-Wordle</div>
+                <p style="font-size: 12.5px; color: #70757a; margin: 4px 0 10px 0;">Guess the secret 5-letter word in 6 tries!</p>
+
+                <div id="wordle-grid" class="wordle-grid"></div>
+
+                <div class="wordle-input-area">
+                    <input type="text" id="wordle-input" maxlength="5" placeholder="5 letters..." style="text-transform: uppercase;" onkeydown="if(event.key==='Enter') submitWordleGuess()">
+                    <button type="button" onclick="submitWordleGuess()">Guess</button>
+                </div>
+                <div id="wordle-message" style="margin-top: 10px; font-weight: 700; font-size: 13px;"></div>
             </div>
             
             <!-- Interactive Coupon Button -->
@@ -382,7 +468,7 @@
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <button id="runaway-btn" onmouseover="this.style.left = (Math.random() * 160 - 80) + 'px'; this.style.top = (Math.random() * 80 - 40) + 'px';">
+            <button id="runaway-btn" onmouseover="dodgeBtn(this)" ontouchstart="dodgeBtn(this)">
                 👎 I disagree
             </button>
 
@@ -391,5 +477,100 @@
             </button>
         </div>
     </div>
+
+    <!-- Wordle Game Script -->
+    <script>
+        const SECRET_WORD = "LOVER"; 
+        let currentRow = 0;
+
+        function dodgeBtn(btn) {
+            btn.style.left = (Math.random() * 160 - 80) + 'px';
+            btn.style.top = (Math.random() * 80 - 40) + 'px';
+        }
+
+        function initWordle() {
+            const grid = document.getElementById("wordle-grid");
+            grid.innerHTML = "";
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement("div");
+                row.className = "wordle-row";
+                for (let j = 0; j < 5; j++) {
+                    const tile = document.createElement("div");
+                    tile.className = "wordle-tile";
+                    tile.id = `tile-${i}-${j}`;
+                    row.appendChild(tile);
+                }
+                grid.appendChild(row);
+            }
+        }
+
+        function submitWordleGuess() {
+            const input = document.getElementById("wordle-input");
+            const guess = input.value.toUpperCase().trim();
+            
+            if (guess.length !== 5) {
+                alert("Please enter a 5-letter word!");
+                return;
+            }
+            if (currentRow >= 6) return;
+
+            const secretArr = SECRET_WORD.split("");
+            const guessArr = guess.split("");
+            const tileStates = Array(5).fill("absent");
+
+            // Green pass
+            for (let i = 0; i < 5; i++) {
+                if (guessArr[i] === secretArr[i]) {
+                    tileStates[i] = "correct";
+                    secretArr[i] = null;
+                }
+            }
+            // Yellow pass
+            for (let i = 0; i < 5; i++) {
+                if (tileStates[i] !== "correct" && secretArr.includes(guessArr[i])) {
+                    tileStates[i] = "present";
+                    secretArr[secretArr.indexOf(guessArr[i])] = null;
+                }
+            }
+
+            // Color tiles
+            for (let i = 0; i < 5; i++) {
+                const tile = document.getElementById(`tile-${currentRow}-${i}`);
+                tile.textContent = guessArr[i];
+                
+                if (tileStates[i] === "correct") {
+                    tile.style.background = "#52b788";
+                    tile.style.color = "white";
+                    tile.style.borderColor = "#52b788";
+                } else if (tileStates[i] === "present") {
+                    tile.style.background = "#ffb703";
+                    tile.style.color = "white";
+                    tile.style.borderColor = "#ffb703";
+                } else {
+                    tile.style.background = "#cbd5e1";
+                    tile.style.color = "white";
+                    tile.style.borderColor = "#cbd5e1";
+                }
+            }
+
+            if (guess === SECRET_WORD) {
+                document.getElementById("wordle-message").textContent = "🎉 YOU WON! Happy 6 Months! ❤️";
+                document.getElementById("wordle-message").style.color = "#ff4d6d";
+                confetti({particleCount: 150, spread: 80, origin: {y: 0.6}});
+                input.disabled = true;
+                return;
+            }
+
+            currentRow++;
+            input.value = "";
+            
+            if (currentRow === 6) {
+                document.getElementById("wordle-message").textContent = "Nice try! The secret word was: " + SECRET_WORD + " ❤️";
+                document.getElementById("wordle-message").style.color = "#70757a";
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', initWordle);
+    </script>
 </body>
 </html>

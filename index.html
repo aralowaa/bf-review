@@ -5,25 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Review: Haw Xian Jie</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body { 
-            font-family: 'Roboto', Arial, sans-serif; 
-            background-color: #f8f9fa; 
+            font-family: 'Quicksand', sans-serif; 
+            background: linear-gradient(135deg, #fff0f3 0%, #f7f0ff 50%, #fff5f7 100%);
+            min-height: 100vh;
             margin: 0; 
-            padding: 20px; 
-            color: #000000;
+            padding: 20px 12px; 
+            color: #3c4043; 
         }
         .review-card { 
-            background: white; 
-            max-width: 600px; 
+            background: #ffffff; 
+            max-width: 620px; 
             margin: 20px auto; 
-            border-radius: 8px; 
-            padding: 24px; 
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            border-radius: 24px; 
+            padding: 28px 24px; 
+            box-shadow: 0 12px 32px rgba(255, 77, 109, 0.08);
+            border: 2px solid #ffe4e9;
+            position: relative;
+        }
+        .special-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ffe5ec;
+            color: #ff4d6d;
+            border: 1px solid #ffccd5;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
         .title {
-            font-size: 24px;
-            margin: 0 0 20px 0;
+            font-size: 26px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
             color: #202124;
         }
         .header { 
@@ -32,31 +53,52 @@
             margin-bottom: 12px; 
         }
         .avatar { 
-            width: 40px; 
-            height: 40px; 
+            width: 46px; 
+            height: 46px; 
             border-radius: 50%; 
-            background-color: #e91e63; /* Pink avatar */
+            background: linear-gradient(135deg, #ff4d6d, #ff758f); 
             color: white; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            font-size: 18px; 
-            margin-right: 15px; 
+            font-size: 20px; 
+            font-weight: 700;
+            margin-right: 14px; 
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+            flex-shrink: 0;
         }
         .user-info h3 { 
             margin: 0; 
             font-size: 16px; 
             color: #202124; 
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         .user-info p { 
             margin: 2px 0 0; 
             font-size: 13px; 
             color: #70757a; 
         }
+        .badge-pill {
+            background: #ffe5ec;
+            color: #ff4d6d;
+            font-weight: 700;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        .verified-tag {
+            color: #ff4d6d;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 3px;
+        }
         .stars { 
-            color: #fbbc04; 
-            font-size: 18px; 
-            margin-bottom: 12px; 
+            color: #ffb703; 
+            font-size: 20px; 
+            margin-bottom: 16px; 
             letter-spacing: 2px;
         }
         .rating-time { 
@@ -65,89 +107,210 @@
             margin-left: 8px; 
             letter-spacing: normal;
         }
+
+        /* Polaroid Photo Gallery */
         .gallery { 
             display: flex; 
             overflow-x: auto; 
-            gap: 8px; 
-            padding-bottom: 10px; 
-            margin: 16px 0; 
+            gap: 14px; 
+            padding: 12px 6px 18px 6px; 
+            margin: 10px 0 20px 0; 
         }
         .gallery img { 
-            width: 120px; 
-            height: 120px; 
+            width: 135px; 
+            height: 135px; 
             object-fit: cover; 
-            border-radius: 8px; 
+            border-radius: 12px; 
+            border: 6px solid #ffffff;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
             flex-shrink: 0; 
-            background-color: #e8eaed; 
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        /* Stylish scrollbar for the photo gallery */
+        .gallery img:nth-child(1) { transform: rotate(-2.5deg); }
+        .gallery img:nth-child(2) { transform: rotate(2deg); }
+        .gallery img:nth-child(3) { transform: rotate(-1.5deg); }
+        .gallery img:hover { 
+            transform: scale(1.08) rotate(0deg); 
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.2);
+            z-index: 2;
+        }
         .gallery::-webkit-scrollbar { height: 6px; }
-        .gallery::-webkit-scrollbar-thumb { background: #dadce0; border-radius: 4px; }
+        .gallery::-webkit-scrollbar-thumb { background: #ffccd5; border-radius: 4px; }
         
-        .content { 
-            font-size: 14px; 
-            line-height: 1.6; 
-            color: #3c4043; 
+        /* Category Ratings Box */
+        .categories-box {
+            background: #faf7fc;
+            border: 1px solid #f0e6f5;
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 20px;
         }
         .category-rating { 
-            margin-bottom: 8px; 
+            margin-bottom: 10px; 
+            font-size: 14px;
+            line-height: 1.5;
         }
+        .category-rating:last-child { margin-bottom: 0; }
         .category-rating span { 
-            font-weight: 600; 
+            font-weight: 700; 
             color: #202124;
         }
-        .review-text {
+
+        /* Verdict Section */
+        .verdict-box {
+            background: #fff8f9;
+            border-left: 4px solid #ff4d6d;
+            border-radius: 0 16px 16px 0;
+            padding: 18px;
+            margin: 20px 0;
+        }
+        .verdict-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ff4d6d;
+            margin-bottom: 8px;
+        }
+        .verdict-box p {
+            margin: 0 0 12px 0;
+            font-size: 14px;
+            line-height: 1.65;
+            color: #4a4e69;
+        }
+        .verdict-box p:last-child { margin-bottom: 0; }
+
+        /* Pros & Cons Cards */
+        .pro-con-card {
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            font-size: 13.5px;
+            line-height: 1.5;
+        }
+        .pro-card {
+            background: #f0fdf4;
+            border: 1.5px solid #bbf7d0;
+            color: #166534;
+        }
+        .con-card {
+            background: #fff7ed;
+            border: 1.5px solid #fed7aa;
+            color: #9a3412;
+        }
+        .pro-con-card strong {
+            display: inline-block;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        /* Reflection & Growth Card */
+        .growth-card {
+            background: #fef6f8;
+            border: 1.5px solid #ffccd5;
+            border-radius: 16px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+        .growth-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #ff4d6d;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .growth-card p {
+            margin: 0;
+            font-size: 13.5px;
+            line-height: 1.65;
+            color: #4a4e69;
+        }
+
+        /* Recommendation Banner */
+        .recommendation-banner {
+            background: #fff0f3;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+            color: #c9184a;
+            font-weight: 600;
+            text-align: center;
             margin: 16px 0;
         }
-        .helpful-btn { 
-            background: none; 
-            border: 1px solid #dadce0; 
-            border-radius: 16px; 
-            padding: 6px 16px; 
-            font-size: 14px; 
-            color: #3c4043; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            margin-top: 20px; 
-            font-family: inherit;
-            transition: background-color 0.2s;
-        }
-        .helpful-btn:hover { 
-            background-color: #f8f9fa; 
-        }
-        #runaway-btn {
-            background: #d93025;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            position: relative;
-            margin-top: 10px;
-        }
+
+        /* Secret Coupon */
         .hidden-message { 
             display: none; 
-            background: #e8f0fe; 
-            border: 1px dashed #1a73e8; 
-            padding: 14px; 
-            border-radius: 8px; 
+            background: #f0f4ff; 
+            border: 1.5px dashed #4361ee; 
+            padding: 14px 16px; 
+            border-radius: 14px; 
             margin-top: 12px; 
-            font-size: 13px; 
-            color: #174ea6; 
+            font-size: 13.5px; 
+            color: #1e3a8a; 
+            line-height: 1.5;
+        }
+
+        /* Buttons Layout */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #f0e6f5;
+        }
+        .helpful-btn { 
+            background: #ff4d6d; 
+            border: none;
+            border-radius: 20px; 
+            padding: 10px 20px; 
+            font-size: 14px; 
+            font-weight: 700;
+            color: white; 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            font-family: inherit;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.25);
+        }
+        .helpful-btn:hover { 
+            background: #ff3355; 
+            transform: translateY(-2px);
+        }
+        #runaway-btn {
+            background: #ffffff;
+            color: #d93025;
+            border: 1px solid #ffccd5;
+            padding: 9px 16px;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.2s;
+        }
+        #runaway-btn:hover {
+            background-color: #fff0f3;
         }
     </style>
 </head>
 <body>
     <div class="review-card">
+        <div class="special-badge">6-MONTH SPECIAL 🎀</div>
+
         <h2 class="title">Haw Xian Jie</h2>
         
         <div class="header">
             <div class="avatar">C</div>
             <div class="user-info">
-                <h3>Cora Soong</h3>
+                <h3>Cora Soong <span class="badge-pill">✨ Top Critic</span></h3>
                 <p>Local Guide · Level 6 Months</p>
+                <div class="verified-tag">💖 Verified Official Girlfriend</div>
             </div>
         </div>
         
@@ -155,6 +318,7 @@
             ★★★★★ <span class="rating-time">Just now</span>
         </div>
 
+        <!-- Polaroid Photo Gallery -->
         <div class="gallery">
             <img src="photo_2026-11-03_22-26-44.jpg" alt="Cute photo 1">
             <img src="photo_2026-11-03_22-26-53.jpg" alt="Cute photo 2">
@@ -162,47 +326,70 @@
         </div>
 
         <div class="content">
-            <div class="category-rating"><span>Customer Service:</span> 5/5. Responds to messages within an acceptable timeframe. Only minor buffering when he is sleeping.</div>
-            <div class="category-rating"><span>Food & Beverage:</span> 4.5/5. Excellent taste in choosing what to eat, but loses half a star for consistently outsourcing decision-making to management (stressful!).</div>
-            <div class="category-rating"><span>Ambiance:</span> 5/5. Excellent temperature control and very cozy. High-quality entertainment provided on-site.</div>
-            <div class="category-rating"><span>Maintenance:</span> 4/5. Generally well-kept, though occasionally leaves saliva in unauthorized zones.</div>
-            
-            <div class="review-text">
-                <strong>The Verdict:</strong><br>
-                <p>I started a 6-month trial  service of this establishment, and to my delight, have found myself increasingly reluctant to leave. What initially seemed like a promising little venture has turned out to be one of the best investments I've made. The management is sweet, handsome and exceptionally accommodating to my requests, with service quality that has consistently exceeded expectations.
+            <!-- Structured Category Breakdown -->
+            <div class="categories-box">
+                <div class="category-rating"><span>Customer Service:</span> 5/5. Responds to messages within an acceptable timeframe. Only minor buffering when he is sleeping.</div>
+                <div class="category-rating"><span>Food & Beverage:</span> 4.5/5. Excellent taste in choosing what to eat, but loses half a star for consistently outsourcing decision-making to management (stressful!).</div>
+                <div class="category-rating"><span>Ambiance:</span> 5/5. Excellent temperature control and very cozy. High-quality entertainment provided on-site.</div>
+                <div class="category-rating"><span>Maintenance:</span> 4/5. Generally well-kept, though occasionally leaves saliva in unauthorized zones.</div>
+            </div>
+
+            <!-- Styled Verdict Box -->
+            <div class="verdict-box">
+                <div class="verdict-title">💌 The Verdict</div>
+                <p>I started a 6-month trial service of this establishment, and to my delight, have found myself increasingly reluctant to leave. What initially seemed like a promising little venture has turned out to be one of the best investments I've made. The management is sweet, handsome and exceptionally accommodating to my requests, with service quality that has consistently exceeded expectations.</p>
                 
-                <p>One particularly table feature is its ability to make time pass ridiculously quickly. Hours somehow turn into minutes whenever I'm here, and even the most ordinary activities become something I look forward to. Whether we're going out, having conversations about absolutely nothing, or simply existing in each other's company, I never seem to run out of things to enjoy. There is something particularly comforting about being able to spend time with someone without feeling the need to constantly fill the silence or find something exciting to do.
+                <p>One particularly notable feature is its ability to make time pass ridiculously quickly. Hours somehow turn into minutes whenever I'm here, and even the most ordinary activities become something I look forward to. Whether we're going out, having conversations about absolutely nothing, or simply existing in each other's company, I never seem to run out of things to enjoy. There is something particularly comforting about being able to spend time with someone without feeling the need to constantly fill the silence or find something exciting to do.</p>
                 
-                <p>The establishment also receives outstanding marks for its sense of security and comfort. I have found it to be an incredibly safe space where I can let my guard down, be myself and feel loved without having to second-guess myself. The management has a rather impressive ability to make me feel at ease, even on days when I'm not particularly easy to deal with. I appreciate having someone I can turn to, lean on and share both the exciting and mundane parts of life with.
+                <p>The establishment also receives outstanding marks for its sense of security and comfort. I have found it to be an incredibly safe space where I can let my guard down, be myself and feel loved without having to second-guess myself. The management has a rather impressive ability to make me feel at ease, even on days when I'm not particularly easy to deal with. I appreciate having someone I can turn to, lean on and share both the exciting and mundane parts of life with.</p>
                 
-                <p>Over the past six months, I've grown increasingly fond of not just the establishment itself, but the person behind its management. I appreciate the little things, the thoughtfulness, the affection, the patience and all the seemingly insignificant moments that have made this experience so special. I find myself looking forward to seeing him, telling him about my day and making more memories together. Even after spending so much time together, I still get excited about the next visit.
+                <p>Over the past six months, I've grown increasingly fond of not just the establishment itself, but the person behind its management. I appreciate the little things, the thoughtfulness, the affection, the patience and all the seemingly insignificant moments that have made this experience so special. I find myself looking forward to seeing him, telling him about my day and making more memories together. Even after spending so much time together, I still get excited about the next visit.</p>
                 
-                <p>While no establishment is entirely without its quirks, I have found that its imperfections are far outweighed by everything it has to offer. In fact, some of these quirks have become rather endearing features that I wouldn't particularly want to change.
+                <p>While no establishment is entirely without its quirks, I have found that its imperfections are far outweighed by everything it has to offer. In fact, some of these quirks have become rather endearing features that I wouldn't particularly want to change.</p>
                 
-                <p>Overall, I have thoroughly enjoyed my first six months here. If anything, this trial period has only made me more certain that this is somewhere I want to stay. I look forward to getting to know the management even better, discovering new things together and seeing what the next chapters of this establishment have in store. I will defintely be renewing my subscription for the foreseeable future!
+                <p>Overall, I have thoroughly enjoyed my first six months here. If anything, this trial period has only made me more certain that this is somewhere I want to stay. I look forward to getting to know the management even better, discovering new things together and seeing what the next chapters of this establishment have in store. I will definitely be renewing my subscription for the foreseeable future!</p>
+            </div>
+
+            <!-- Pros & Cons Cards -->
+            <div class="pro-card pro-con-card">
+                <strong>💚 Pros:</strong> Strong, Kind, and Patient.
+            </div>
+
+            <div class="con-card pro-con-card">
+                <strong>🧡 Cons / Management Habits:</strong> Management has a peculiar habit of provoking customers for recreational purposes. Appears to derive considerable satisfaction from observing customer frustration (ragebait).
+            </div>
+
+            <!-- Areas for Growth Card -->
+            <div class="growth-card">
+                <div class="growth-title">🌱 Personal Reflection & Areas for Growth</div>
+                <p>One thing I've learnt about myself over these six months is that I'm not particularly good at handling conflict. Even when we approach disagreements with patience and understanding, I sometimes get overwhelmed and end up crying, even when I don't intend to. I think I just really dislike being at odds with you, and I find it difficult to sit with the discomfort of knowing that we're upset with each other. I naturally gravitate towards wanting to resolve things quickly so we can go back to being our usual affectionate selves, but it takes me time to process my thoughts as well so I don't say things I don't mean. I know that disagreements are a normal part of any relationship, and I genuinely appreciate how we try to navigate them together. I think this is something I want to work on personally, learning to be more comfortable with expressing my disagreements, sitting with uncomfortable feelings and understanding that not every difference in opinion needs to be resolved immediately. I hope I can become better at this while continuing to appreciate the patience and understanding you show me.</p>
+            </div>
+
+            <div class="recommendation-banner">
+                🔒 <strong>Would I recommend?</strong> Absolutely not, this location is strictly private property.
             </div>
             
-            <div><strong>Pros:</strong> Strong, Kind and Patient</div>
-            <div><strong>Cons:</strong> Management has a peculiar habit of provoking customers for recreational purposes. Appears to derive considerable satisfaction from observing customer frustration (ragebait).</div>
-            <div style="margin-top: 4px;"><strong>Areas for Growth:</strong> One thing I've learnt about myself over these six months is that I'm not particularly good at handling conflict. Even when we approach disagreements with patience and understanding, I sometimes get overwhelmed and end up crying, even when I don't intend to. I think I just really dislike being at odds with you, and I find it difficult to sit with the discomfort of knowing that we're upset with each other. I naturally gravitate towards wanting to resolve things quickly so we can go back to being our usual affectionate selves, but it takes me time to process my thoughts as well so I don't say things I don't mean. I know that disagreements are a normal part of any relationship, and I genuinely appreciate how we try to navigate them together. I think this is something I want to work on personally, learning to be more comfortable with expressing my disagreements, sitting with uncomfortable feelings and understanding that not every difference in opinion needs to be resolved immediately. I hope I can become better at this while continuing to appreciate the patience and understanding you show me.</div>
-            <div style="margin-top: 8px;"><strong>Would I recommend?</strong> Absolutely not, this location is strictly private property.</div>
-            
-            <div style="margin-top: 16px;">
-                <button type="button" onclick="document.getElementById('coupon').style.display = 'block'" style="background: white; border: 1px solid #1a73e8; color: #1a73e8; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 500;">
+            <!-- Interactive Coupon Button -->
+            <div style="margin-top: 18px; text-align: center;">
+                <button type="button" onclick="document.getElementById('coupon').style.display = 'block'" style="background: #ffffff; border: 1.5px solid #4361ee; color: #4361ee; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 700; font-family: inherit; font-size: 13.5px; transition: all 0.2s;">
                     🎁 Redeem Owner's Special Offer
                 </button>
                 <div id="coupon" class="hidden-message">
-                    🎟️ <strong>COUPON UNLOCKED:</strong> Valid for 1 (one) free wish coupon!</div>
+                    🎟️ <strong>COUPON UNLOCKED:</strong> Valid for 1 (one) free wish coupon!
+                </div>
             </div>
         </div>
 
-        <button id="runaway-btn" onmouseover="this.style.left = (Math.random() * 200 - 100) + 'px'; this.style.top = (Math.random() * 200 - 100) + 'px';">
-            👎 I disagree with this review
-        </button>
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button id="runaway-btn" onmouseover="this.style.left = (Math.random() * 160 - 80) + 'px'; this.style.top = (Math.random() * 80 - 40) + 'px';">
+                👎 I disagree
+            </button>
 
-        <button class="helpful-btn" onclick="confetti({particleCount: 100, spread: 70, origin: {y: 0.6}}); alert('Yay! Happy 6 months! ❤️');">
-            👍 Helpful
-        </button>
+            <button class="helpful-btn" onclick="confetti({particleCount: 120, spread: 80, origin: {y: 0.6}}); alert('Yay! Happy 6 months! ❤️');">
+                👍 Mark as Helpful
+            </button>
+        </div>
     </div>
 </body>
 </html>
